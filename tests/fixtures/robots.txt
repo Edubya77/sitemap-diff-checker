@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /private/
+# Sitemap: https://example.com/ignored.xml
+Sitemap: https://example.com/sitemap.xml
+  sItEmAp : https://example.com/news.xml # news sitemap
+Sitemap: https://example.com/sitemap.xml
+Sitemap:
+Sitemap https://example.com/missing-colon.xml
+Other: https://example.com/other.xml

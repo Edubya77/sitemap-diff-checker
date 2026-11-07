@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc> https://example.com/ </loc>
+    <lastmod>2026-01-01</lastmod>
+    <image:image><image:loc>https://example.com/photo.jpg</image:loc></image:image>
+  </url>
+  <url><loc>https://example.com/search?a=1&amp;b=2</loc></url>
+  <url><loc>https://example.com/café</loc></url>
+  <url><loc>https://example.com/</loc></url>
+  <url><loc> </loc></url>
+  <url><loc /></url>
+  <url><lastmod>2026-01-02</lastmod></url>
+</urlset>

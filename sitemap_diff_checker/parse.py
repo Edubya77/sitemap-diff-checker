@@ -13,7 +13,13 @@ SITEMAP_NAMESPACE = "http://www.sitemaps.org/schemas/sitemap/0.9"
 
 
 def parse_robots(text: str) -> list[str]:
-    """Return nonempty Sitemap declarations, ignoring case and comments."""
+    """Return nonempty Sitemap declarations, ignoring case and comments.
+
+    A single Unicode BOM (U+FEFF) at the very start of the input is ignored so a
+    first-line Sitemap directive is not lost; interior BOM characters are kept.
+    """
+    if text.startswith("\ufeff"):
+        text = text[1:]
     urls = []
     for line in text.splitlines():
         declaration = line.split("#", 1)[0]

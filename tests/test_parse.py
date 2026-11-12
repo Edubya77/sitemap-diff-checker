@@ -32,6 +32,29 @@ class RobotsTests(unittest.TestCase):
             ["https://example.com:8443/map.xml"],
         )
 
+    def test_leading_bom_prefixes_first_declaration(self):
+        text = "\ufeffSitemap: https://example.com/sitemap.xml"
+        self.assertEqual(parse_robots(text), ["https://example.com/sitemap.xml"])
+
+    def test_bom_only_input_is_empty(self):
+        self.assertEqual(parse_robots("\ufeff"), [])
+
+    def test_leading_bom_with_later_declaration(self):
+        text = "\ufeffUser-agent: *\nSitemap: https://example.com/sitemap.xml"
+        self.assertEqual(parse_robots(text), ["https://example.com/sitemap.xml"])
+
+    def test_interior_bom_in_url_is_preserved(self):
+        text = "\ufeffSitemap: https://exa\ufeffmple.com/sitemap.xml"
+        self.assertEqual(parse_robots(text), ["https://exa\ufeffmple.com/sitemap.xml"])
+
+    def test_leading_bom_duplicate_declarations_collapse_in_source_order(self):
+        text = "\ufeffSitemap: https://a\nSitemap: https://b\nSitemap: https://a"
+        self.assertEqual(parse_robots(text), ["https://a", "https://b"])
+
+    def test_only_one_leading_bom_is_stripped(self):
+        text = "\ufeff\ufeffSitemap: https://example.com/sitemap.xml"
+        self.assertEqual(parse_robots(text), [])
+
 
 class SitemapTests(unittest.TestCase):
     def test_namespaced_urlset_fixture(self):

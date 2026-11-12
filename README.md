@@ -26,7 +26,7 @@ Robots text uses UTF-8 with BOM support and replacement of invalid bytes.
 No declarations means an empty list. The MVP has no documented fallback policy,
 so this increment does not guess `/sitemap.xml` or other paths. A missing or
 unavailable robots.txt raises a fetch error; it is not treated as an empty file.
-Invalid or unsupported declared URLs also raise an error.
+Invalid or unsupported declared URLs also raise an error, unless `ignore_invalid=True` is supplied, in which case rejected declarations are skipped and the remaining valid declarations are returned in source order, deduplicated; an all-invalid robots file yields an empty list.
 
 `fetch.fetch_bytes(url)` downloads an individual HTTP/HTTPS resource for a parser
 to consume. It supports gzip HTTP responses and gzip files identified by their

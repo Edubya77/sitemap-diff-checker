@@ -113,6 +113,27 @@ class SitemapTests(unittest.TestCase):
                         parser(xml)
                     self.assertIsNotNone(caught.exception.__cause__)
 
+    def test_unsupported_encoding_is_wrapped_as_malformed(self):
+        for parser, root in (
+            (parse_urlset, "urlset"),
+            (parse_sitemap_index, "sitemapindex"),
+        ):
+            xml = b'<?xml version="1.0" encoding="made-up"?>' + f"<{root}/>".encode("utf-8")
+            with self.subTest(parser=parser.__name__, xml=xml):
+                with self.assertRaisesRegex(ValueError, "Malformed sitemap XML") as caught:
+                    parser(xml)
+                self.assertIsInstance(caught.exception.__cause__, LookupError)
+
+    def test_valid_utf8_byte_documents_return_locations(self):
+        cases = (
+            (parse_urlset, b'<urlset><url><loc>https://example.com/</loc></url></urlset>'),
+            (parse_sitemap_index, b'<sitemapindex><sitemap><loc>https://example.com/</loc></sitemap></sitemapindex>'),
+        )
+        for parser, body in cases:
+            xml = b'<?xml version="1.0" encoding="UTF-8"?>' + body
+            with self.subTest(parser=parser.__name__):
+                self.assertEqual(parser(xml), ["https://example.com/"])
+
     def test_wrong_root_or_namespace_is_rejected(self):
         for parser, wrong_root in (
             (parse_urlset, "sitemapindex"),

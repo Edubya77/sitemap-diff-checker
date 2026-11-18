@@ -44,7 +44,7 @@ def parse_sitemap_index(xml: str | bytes) -> list[str]:
 def _parse_locations(xml: str | bytes, root_name: str, entry_name: str) -> list[str]:
     try:
         root = ElementTree.fromstring(xml)
-    except ElementTree.ParseError as error:
+    except (ElementTree.ParseError, LookupError) as error:
         raise ValueError(f"Malformed sitemap XML: {error}") from error
 
     if root.tag == root_name:

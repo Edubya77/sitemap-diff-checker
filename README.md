@@ -53,7 +53,22 @@ sitemap_urls = discover_sitemaps("https://example.com")
 # page_urls = parse_urlset(fetch_bytes(sitemap_urls[0]))
 ```
 
-Recursive traversal, snapshots, comparison, and the final CLI are not implemented.
+`diff.diff_urls(previous, current)` compares two URL sets and returns a dict with
+`"added"` and `"removed"` keys, each a lexicographically sorted list of distinct
+strings. Inputs are compared literally: no normalization, whitespace stripping,
+case folding, scheme folding, fetching, or validation is performed. Each input is
+consumed as a one-shot iterable, so generators are supported, and duplicate inputs
+are removed. Caller collections are not mutated.
+
+```python
+from sitemap_diff_checker.diff import diff_urls
+
+previous = ["https://a/", "https://b/"]
+current = ["https://b/", "https://c/"]
+assert diff_urls(previous, current) == {"added": ["https://c/"], "removed": ["https://a/"]}
+```
+
+Recursive traversal, snapshots, and the final CLI are not implemented.
 
 Run the tests without public internet access:
 

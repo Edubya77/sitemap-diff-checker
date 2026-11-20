@@ -124,6 +124,22 @@ class SitemapTests(unittest.TestCase):
                     parser(xml)
                 self.assertIsInstance(caught.exception.__cause__, LookupError)
 
+    def test_utf7_encoding_is_wrapped_as_malformed(self):
+        cases = (
+            (parse_urlset, b'<?xml version="1.0" encoding="UTF-7"?><urlset/>'),
+            (parse_sitemap_index, b'<?xml version="1.0" encoding="UTF-7"?><sitemapindex/>'),
+        )
+        for parser, xml in cases:
+            with self.subTest(parser=parser.__name__):
+                with self.assertRaises(ValueError) as caught:
+                    parser(xml)
+                self.assertTrue(
+                    str(caught.exception).startswith("Malformed sitemap XML:")
+                )
+                cause = caught.exception.__cause__
+                self.assertIsInstance(cause, ValueError)
+                self.assertEqual(str(cause), "multi-byte encodings are not supported")
+
     def test_valid_utf8_byte_documents_return_locations(self):
         cases = (
             (parse_urlset, b'<urlset><url><loc>https://example.com/</loc></url></urlset>'),
